@@ -37,6 +37,7 @@ class Turtle(QWidget):
         x = 0
         y = 0
         painter.setBrush(Qt.NoBrush)
+        buffer = ""
         if self.bg and isvalidcolor(self.bg):
             self.bg = self.bg.lower()
             self.setStyleSheet(f"background: {self.bg};")
@@ -68,7 +69,11 @@ class Turtle(QWidget):
             elif p == "CLEAR":
                 self.clear()
             elif p.split()[0] == "PYCODE":
-                exec(p.split(" ", 1)[1], globals())
+                if p.strip() == "PYCODE END":
+                    exec(buffer, globals())
+                    buffer = ""
+                else:
+                    buffer += p.split(" ", 1)[1]
             elif p.split()[0] == "CIRCLE":
                 coords = p.split(" ", 1)[1].replace(" ", ", ")
                 painter.drawEllipse(*eval(coords))
